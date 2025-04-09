@@ -12,4 +12,4 @@ EXPOSE 8000
 
 COPY . .
 
-CMD uvicorn src.main:app --reload
+CMD ["uvicorn", "src.main:app", "--reload"]
