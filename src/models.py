@@ -1,10 +1,14 @@
 from datetime import datetime
 
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.ext.declarative import declared_attr
 
 
 class Base(DeclarativeBase):
-    pass
+    @declared_attr
+    def id(cls):
+        from sqlalchemy import Column, Integer
+        return Column(Integer, primary_key=True, index=True)
 
 
 class CreatedUpdatedMixin:

@@ -34,4 +34,4 @@ class Config(BaseSettings):
         )
 
 
-config = Config()
+config = Config() # type: ignore

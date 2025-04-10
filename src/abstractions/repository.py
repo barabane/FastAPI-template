@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List
+from typing import List, Sequence
 
 from pydantic import BaseModel
 from sqlalchemy import insert, select, update
@@ -7,16 +7,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models import Base
 
-
-class AbstractRepository(ABC):
-    def __init__(self, session: AsyncSession, model):
+class AbstractRepository[T: Base, M: BaseModel](ABC):
+    def __init__(self, session: AsyncSession, model: type[T]):
         self._session: AsyncSession = session
-        self._model: Base = model
+        self._model: type[T] = model
 
-    async def get_by_id(self, id) -> Base | None:
+    async def get_by_id(self, id) -> T | None:
         return await self._session.get(entity=self._model, ident=id)
 
-    async def get_all(self, filters: dict = {}) -> List[Base]:
+    async def get_all(self, filters: dict = {}) -> Sequence[T]:
         offset = filters.get("offset") or 0
         limit = filters.get("limit") or 10
         order_by = filters.get("order_by") or None
@@ -35,14 +34,14 @@ class AbstractRepository(ABC):
             .all()
         )
 
-    async def add(self, entity: BaseModel) -> Base:
+    async def add(self, entity: M) -> T:
         return (
             await self._session.execute(
                 insert(self._model).values(**entity.model_dump()).returning(self._model)
             )
         ).scalar_one()
 
-    async def add_many(self, entities: List[BaseModel]) -> List[Base]:
+    async def add_many(self, entities: List[M]) -> Sequence[T]:
         return (
             (
                 await self._session.execute(
@@ -55,7 +54,7 @@ class AbstractRepository(ABC):
             .all()
         )
 
-    async def update(self, id, new_entity: BaseModel) -> Base:
+    async def update(self, id, new_entity: M) -> T:
         return (
             await self._session.execute(
                 update(self._model)

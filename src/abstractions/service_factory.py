@@ -8,10 +8,10 @@ from .service import AbstractService
 
 
 class AbstractServiceFactory(ABC):
-    def __init__(self, service: AbstractService, repository: AbstractRepository, model: Base):
-        self._service: AbstractService = service
-        self._repository: AbstractRepository = repository
-        self._model: Base = model
+    def __init__(self, service: type[AbstractService], repository: type[AbstractRepository], model: type[Base]):
+        self._service: type[AbstractService] = service
+        self._repository: type[AbstractRepository] = repository
+        self._model: type[Base] = model
 
     async def create_repository(self, session):
         return self._repository(session=session, model=self._model)
