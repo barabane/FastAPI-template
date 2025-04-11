@@ -1,6 +1,8 @@
 from functools import wraps
 from typing import Callable
+
 from .logger import logger
+
 
 def catch_error(func: Callable):
     @wraps(func)
@@ -10,4 +12,5 @@ def catch_error(func: Callable):
         except Exception as e:
             logger.error(f"{func.__name__}")
             raise e
+
     return wrapper

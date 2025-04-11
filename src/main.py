@@ -1,22 +1,23 @@
 from contextlib import asynccontextmanager
-import time
-from typing import Optional
-from fastapi import FastAPI, HTTPException, Request, Response
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
+
 from .config import config
 from .middlewares.logging_middleware import LoggingMiddleware
 
-from redis import asyncio as aioredis
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     redis = aioredis.from_url(config.REDIS_URL)
     FastAPICache.init(RedisBackend(redis), prefix="cache")
     yield
-    
-app  = FastAPI(lifespan=lifespan)
+
+
+app = FastAPI(lifespan=lifespan)
 
 origins = [
     "http://localhost",

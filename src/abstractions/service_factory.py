@@ -8,7 +8,12 @@ from .service import AbstractService
 
 
 class AbstractServiceFactory(ABC):
-    def __init__(self, service: type[AbstractService], repository: type[AbstractRepository], model: type[Base]):
+    def __init__(
+        self,
+        service: type[AbstractService],
+        repository: type[AbstractRepository],
+        model: type[Base],
+    ):
         self._service: type[AbstractService] = service
         self._repository: type[AbstractRepository] = repository
         self._model: type[Base] = model

@@ -10,12 +10,12 @@ class Config(BaseSettings):
     PG_DB_NAME: str
     PG_USER: str
     PG_PASSWORD: str
-    
+
     REDIS_HOST: str
     REDIS_PORT: int
 
     API_VERSION: str = "/v1"
-    
+
     @property
     def REDIS_URL(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
@@ -34,4 +34,4 @@ class Config(BaseSettings):
         )
 
 
-config = Config() # type: ignore
+config = Config()  # type: ignore
