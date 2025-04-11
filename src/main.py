@@ -1,9 +1,12 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+import time
+from typing import Optional
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from .config import config
+from .middlewares.logging_middleware import LoggingMiddleware
 
 from redis import asyncio as aioredis
 
@@ -20,6 +23,7 @@ origins = [
     "http://localhost:8000",
 ]
 
+app.add_middleware(LoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
