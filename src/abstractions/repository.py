@@ -2,7 +2,7 @@ from abc import ABC
 from typing import List, Sequence
 
 from pydantic import BaseModel
-from sqlalchemy import insert, select, update
+from sqlalchemy import exists, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models import Base
@@ -12,6 +12,11 @@ class AbstractRepository[T: Base, M: BaseModel](ABC):
     def __init__(self, session: AsyncSession, model: type[T]):
         self._session: AsyncSession = session
         self._model: type[T] = model
+
+    async def check_exists(self, id):
+        return (
+            await self._session.execute(select(exists().where(self._model.id == id)))
+        ).scalar()
 
     async def get_by_id(self, id) -> T | None:
         return await self._session.get(entity=self._model, ident=id)

@@ -10,6 +10,9 @@ class AbstractService[T: BaseModel, R: AbstractRepository](ABC):
     def __init__(self, repository: R):
         self._repository: R = repository
 
+    async def check_exists(self, id):
+        return await self._repository.check_exists(id=id)
+
     async def get_by_id(self, id):
         return await self._repository.get_by_id(id=id)
 
