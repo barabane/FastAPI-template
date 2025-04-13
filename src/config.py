@@ -22,7 +22,7 @@ class Config(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
 
-    API_VERSION: str = "/v1"
+    API_VERSION: str = "/api/v1"
     CORS_ORIGINS: Annotated[List[AnyHttpUrl] | str, BeforeValidator(parse_cors)]
 
     @property
