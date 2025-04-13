@@ -1,5 +1,13 @@
-from pydantic import PostgresDsn
+from typing import Annotated, List
+
+from pydantic import AnyHttpUrl, BeforeValidator, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def parse_cors(v: str):
+    if not v.startswith("["):
+        raise ValueError(v)
+    return [origin.strip() for origin in v[1:-1].split(",")]
 
 
 class Config(BaseSettings):
@@ -15,6 +23,7 @@ class Config(BaseSettings):
     REDIS_PORT: int
 
     API_VERSION: str = "/v1"
+    CORS_ORIGINS: Annotated[List[AnyHttpUrl] | str, BeforeValidator(parse_cors)]
 
     @property
     def REDIS_URL(self) -> str:
